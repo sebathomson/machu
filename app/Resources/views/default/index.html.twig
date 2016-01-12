@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+{% for cat in cats %}
+    <a href="{{ path('category', {'catId': cat.id}) }}">{{ cat.name }}</a>
+{%  endfor %}
+
+{% endblock %}

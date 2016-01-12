@@ -1,0 +1,12 @@
+Destination: {{ r.category.destination.name }} <br>
+Tour: {{ r.category.name }} <br>
+{% if r.category.destination.id == 10 %}
+Date: {{ r.category.customDate|date("d.m.Y") }} <br>
+{% else %}
+Date: {{ r.category.date.date|date("d.m.Y") }} <br>
+{% endif %}
+Email: {{ r.email }} <br>
+Name: {{ r.name }} <br>
+Country: {{ r.country }} <br>
+Approve: {{ absolute_url(path('approve_reservation', {'reservationId': r.id})) }} <br>
+Reject: {{ absolute_url(path('reject_reservation', {'reservationId': r.id})) }} <br>

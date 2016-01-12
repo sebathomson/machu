@@ -1,0 +1,26 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/book/service_container.html
+parameters:
+#    parameter_name: value
+
+services:
+#    service_name:
+#        class: AppBundle\Directory\ClassName
+#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+    admin.category:
+        class: AppBundle\Admin\CategoryAdmin
+        arguments: [~, AppBundle\Entity\Category, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: Category }
+        calls:
+            - [ setTemplate, [edit, admin/Category/new.html.twig]]
+    admin.reservation:
+        class: AppBundle\Admin\ReservationAdmin
+        arguments: [~, AppBundle\Entity\Reservation, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: Reservation }
+    admin.destination:
+        class: AppBundle\Admin\DestinationAdmin
+        arguments: [~, AppBundle\Entity\Destination, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: Destination }

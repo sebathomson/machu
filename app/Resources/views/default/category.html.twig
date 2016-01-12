@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+<div class="base central {{ cat.destination.name }} number-{{ cat.id }}">
+    <div class="paragraph categorydestination">{{ cat.destination.name }} </div>
+    <div class="paragraph categoryname">{{ cat.name }} </div>
+
+    {% if isAvailable == true %}
+    <div class="paragraph categorysapce">{{ gav }} spaces available (global)</div>
+    {% if isCustom == false %}
+    {{ (av / 2)|round - rcnt }} spaces available for booking
+    {% endif %}
+    <div class="paragraph categorydate">for day {{ td.date|date("d.m.Y") }}
+    </div>
+
+    <div class="paragraph categoryusers">Users who have joined =  {{ rcnt }} ({{ unames|join(',') }})
+    </div>
+
+    <div class="paragraph categorylink">Join this tour, <a href="{{ path('reservation', {'catId': cat.id}) }}">click here</a></div>
+
+    {% else %}
+
+    No available.
+
+    {% endif %}
+</div>
+{% endblock %}
