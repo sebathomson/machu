@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 {% block body %}
 Success 
-{% if r.category.destination.id == 10 %}
-{{ r.category.customDate|date("d.m.Y") }}
+{% if r.tourDate.category.destination.id == 10 %}
+{{ r.tourDate.category.customDate|date("d.m.Y") }}
 {% else %}
-{{ r.category.date.date|date("d.m.Y") }}
-{% endif %}{{ r.category.name }} {{ r.email }}
+{{ r.tourDate.category.date.date|date("d.m.Y") }}
+{% endif %}{{ r.tourDate.category.name }} {{ r.email }}
 {% endblock %}

@@ -1,0 +1,167 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	{% set time = date | date("U") %}
+	<style>
+		table {
+			width: 100%;
+			border: 1px solid #999;
+			border-collapse: collapse;
+			font-family: Georgia, Times, serif;
+		}
+		th {
+			border: 1px solid #999;
+			font-size: 70%;
+			text-transform: uppercase;
+		}
+		td {
+			border: 1px solid #999;
+			height: 5em;
+			width:5em;
+			padding: 5px;
+			vertical-align: top;
+		}
+		caption {
+			font-size: 300%;
+			font-style: italic;
+		}
+		.day {
+			text-align: right;
+		}
+		.notes {
+			font-family: Arial, Helvetica, sans-serif;
+			font-size: 80%;
+			text-align: right;
+			padding-left: 20px;
+		}
+		.birthday {
+			background-color: #ECE;
+		}
+		.weekend {
+			background-color: #F3F3F3;
+		}
+		.month-name {
+			font-size: 3em;
+		}
+		.day-name {
+			font-size: 1.2em;
+		}
+		.date-number {
+			font-size: 1.8em;
+			border: 1px solid #000;
+			text-align: center;
+			padding: 0px 0px 5px 0px;
+			background-color: #FF0;
+		}
+		.spaces-available {
+			border: 1px solid #333;
+			margin-top: 2px;
+			padding: 2px;
+		}
+		.users-joined {
+			border: 1px solid #333;
+			margin-top: 2px;
+			padding: 2px;
+		}
+		.not-scheduled-day {
+			background-color: #999;
+		}
+		.no-available-day {
+			background-color: red;
+		}
+		.available-day {
+			background-color: green;
+		}
+		.not-scheduled-msg, .no-available-msg {
+			border: 1px solid #333;
+			margin-top: 2px;
+			padding: 2px;
+		}
+	</style>
+	<table>
+		<thead>
+			<tr>
+				<th>
+					<a href="{{ path('category', {'id': id}) }}?month={{ prevCalendar | date('m') }}&year={{ prevCalendar | date('Y') }}">< Prev</a>
+				</th>
+				<th colspan="5" class="center month-name">
+					{{ nameCategory }} - {{ time | date('F') }}
+				</th>
+				<th>
+					<a href="{{ path('category', {'id': id}) }}?month={{ nextCalendar | date('m') }}&year={{ nextCalendar | date('Y') }}">Next ></a></th>
+			</tr>
+			<tr>
+				<th class="day-name" width="12%">Sunday</th>
+				<th class="day-name" width="15%">Monday</th>
+				<th class="day-name" width="15%">Tuesday</th>
+				<th class="day-name" width="16%">Wednesday</th>
+				<th class="day-name" width="15%">Thursday</th>
+				<th class="day-name" width="15%">Friday</th>
+				<th class="day-name" width="12%">Saturday</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				{% set daysInMonth = time|date('t') %}
+				{% set startDow = time|date('F 1\\s\\t Y')|date('w') %}
+				{% set dow = startDow %}
+				{% for day in range(1,daysInMonth) %}
+					{% if day < 10 %}
+						{% set iDate = time|date('Y') ~ time|date('m') ~ '0' ~ day %}
+					{% else %}
+						{% set iDate = time|date('Y') ~ time|date('m') ~ day %}
+					{% endif %}
+					{% if loop.first and startDow != 0 %}
+						<td colspan="{{ startDow }}"></td>
+					{% endif %}
+					<td>
+						<div>
+							{% if iToday > iDate  %}
+								{# No Available #}
+								<div class="date-number no-available-day">{{ day }}</div>
+								<div class="no-available-msg">No Available</div>
+							{% else %}
+
+								{% if arrDates[day] is defined %}
+									{% if arrDates[day].availability is null %}
+										{# Not Scheduled #}
+										<div class="date-number not-scheduled-day">{{ day }}</div>
+										<div class="not-scheduled-msg">Not Scheduled</div>
+									{% else %}
+										<div class="date-number available-day">{{ day }}</div>
+										<div class="spaces-available">{{ arrDates[day].availability }} spaces</div>
+										<div class="users-joined">{{ arrDates[day].reservations }} users</div>
+										{% if arrDates[day].availability != 0 %}
+										<div class="join"><a href="{{ path('reservation', {'tourDateId': arrDates[day].id}) }}">Join this tour</a></div>
+										{% endif %}
+									{% endif %}
+								{% endif %}
+							{% endif %}
+
+
+
+
+
+{# 							<div class="date-number {% if iToday > iDate  %}expired-day{% endif %}">{{ day }}</div>
+							{% if iToday <= iDate %}
+
+							{% else %}
+								<div class="spaces-available">expired</div>
+							{% endif %}
+						</div>#}
+					</td>
+					{% if loop.last and dow != 6 %}
+						<td colspan="{{ 6 - dow }}">&nbsp;</td>
+					{% endif %}
+					{% if dow == 6 %}
+						{% set dow = 0 %}
+						</tr>
+						<tr>
+							{% else %}
+							{% set dow = dow + 1 %}
+							{% endif %}
+						{% endfor %}
+					</tr>
+				</tbody>
+			</table>
+		{% endblock %}

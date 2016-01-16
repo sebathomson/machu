@@ -21,7 +21,7 @@ file that was distributed with this source code.
     and admin.isGranted(action, action in ['VIEW', 'EDIT'] ? object : null)
     %}
         <a class="sonata-link-identifier" href="{{ admin.generateObjectUrl(route, object, field_description.options.route.parameters) }}">
-            {%- block field %}{{ absolute_url(path('category', {'catId': value})) }}{% endblock -%}
+            {%- block field %}{{ absolute_url(path('category', {'id': value})) }}{% endblock -%}
         </a>
     {% else %}
         {% set isEditable = field_description.options.editable is defined and field_description.options.editable and admin.isGranted('EDIT', object) %}

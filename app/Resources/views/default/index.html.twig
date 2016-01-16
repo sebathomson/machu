@@ -3,7 +3,7 @@
 {% block body %}
 
 {% for cat in cats %}
-    <a href="{{ path('category', {'catId': cat.id}) }}">{{ cat.name }}</a>
+    <a href="{{ path('category', {'id': cat.id}) }}">{{ cat.name }}</a>
 {%  endfor %}
 
 {% endblock %}

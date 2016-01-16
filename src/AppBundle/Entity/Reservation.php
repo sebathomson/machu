@@ -14,7 +14,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity
  * @ORM\Table(name="reservation")
- * @UniqueEntity({"email", "category"})
+ * @UniqueEntity({"email", "tourDate"})
  */
 class Reservation {
 
@@ -46,12 +46,10 @@ class Reservation {
     protected $status;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Category", inversedBy="reservations")
-     * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="TourDate", inversedBy="reservations")
+     * @ORM\JoinColumn(name="tour_date_id", referencedColumnName="id")
      */
-    protected $category;
-
-
+    protected $tourDate;
 
     /**
      * Get id
@@ -72,7 +70,7 @@ class Reservation {
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
@@ -95,7 +93,7 @@ class Reservation {
     public function setEmail($email)
     {
         $this->email = $email;
-    
+
         return $this;
     }
 
@@ -118,7 +116,7 @@ class Reservation {
     public function setCountry($country)
     {
         $this->country = $country;
-    
+
         return $this;
     }
 
@@ -141,7 +139,7 @@ class Reservation {
     public function setStatus($status)
     {
         $this->status = $status;
-    
+
         return $this;
     }
 
@@ -156,25 +154,25 @@ class Reservation {
     }
 
     /**
-     * Set category
+     * Set tourDate
      *
-     * @param \AppBundle\Entity\Category $category
+     * @param \AppBundle\Entity\TourDate $tourDate
      * @return Reservation
      */
-    public function setCategory(\AppBundle\Entity\Category $category = null)
+    public function setTourDate(\AppBundle\Entity\TourDate $tourDate = null)
     {
-        $this->category = $category;
-    
+        $this->tourDate = $tourDate;
+
         return $this;
     }
 
     /**
-     * Get category
+     * Get tourDate
      *
-     * @return \AppBundle\Entity\Category 
+     * @return \AppBundle\Entity\TourDate 
      */
-    public function getCategory()
+    public function getTourDate()
     {
-        return $this->category;
+        return $this->tourDate;
     }
 }

@@ -19,11 +19,11 @@ class ReservationAdmin extends Admin {
         $formMapper->add('name')
         ->add('email')
         ->add('country', 'country')
-        ->add('category.destination', null, array(
+        ->add('tourDate.category.destination', null, array(
             'read_only' => true,
             'disabled'  => true,
             ))
-        ->add('category', null, array(
+        ->add('tourDate.category', null, array(
             'read_only' => true,
             'disabled'  => true,
             ))
@@ -33,13 +33,13 @@ class ReservationAdmin extends Admin {
             'approved'=>'approved',
             )));
 
-        if( $this->getSubject()->getId() && $this->getSubject()->getCategory()->getDestination()->getId() == 10 ){
-            $formMapper->add('category.custom_date', 'date', array(
+        if( $this->getSubject()->getId() && $this->getSubject()->getTourDate()->getCategory()->getDestination()->getId() == 10 ){
+            $formMapper->add('tourDate.category.custom_date', 'date', array(
                 'read_only' => true,
                 'disabled'  => true,
                 ));
         } else {
-            $formMapper->add('category.date.date', 'date', array(
+            $formMapper->add('tourDate.category.date.date', 'date', array(
                 'read_only' => true,
                 'disabled'  => true,
                 ));
@@ -53,13 +53,12 @@ class ReservationAdmin extends Admin {
         $listMapper->addIdentifier('name')
         ->addIdentifier('email')
         ->addIdentifier('country')
-        ->addIdentifier('category.date.date', null, array(
+        ->addIdentifier('tourDate.date', null, array(
             'label' => 'Category Date INC'
             )
         )
-        ->add('category.custom_date', 'date')
-        ->addIdentifier('category.destination.name')
-        ->addIdentifier('category.name')
+        ->addIdentifier('tourDate.category.destination.name')
+        ->addIdentifier('tourDate.category.name')
         ->addIdentifier('status');
     }
 

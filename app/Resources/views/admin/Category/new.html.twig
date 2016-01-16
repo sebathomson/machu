@@ -40,25 +40,24 @@ file that was distributed with this source code.
     {{ block('parentForm') }}
     <script>
         $(document).on('ready', function() {
+            $('#sonata-ba-field-container-{{ admin.uniqId }}_baseAvailability').hide();
+            $('[name=btn_create_and_create]').remove();
+            $('[name=btn_create_and_list]').remove();
+            $('[name=btn_create_and_edit]').html('Continue <i class="fa fa-arrow-right"></i>');
+            
             if ( $('#{{ admin.uniqId }}_destination').val() != 10 ) {
-                $('#sonata-ba-field-container-{{ admin.uniqId }}_custom_availability').hide();
-                $('#sonata-ba-field-container-{{ admin.uniqId }}_custom_date').hide();
-            } else {
-                $('#sonata-ba-field-container-{{ admin.uniqId }}_date').hide();
                 $('#sonata-ba-field-container-{{ admin.uniqId }}_minAvailability').hide();
+                $('#sonata-ba-field-container-{{ admin.uniqId }}_year').hide();
+            } else {
             }
 
             $('#{{ admin.uniqId }}_destination').on('change', function () {
                 if ( $(this).val() == 10 ) {
-                    $('#sonata-ba-field-container-{{ admin.uniqId }}_custom_availability').show();
-                    $('#sonata-ba-field-container-{{ admin.uniqId }}_custom_date').show();
-                    $('#sonata-ba-field-container-{{ admin.uniqId }}_date').hide();
                     $('#sonata-ba-field-container-{{ admin.uniqId }}_minAvailability').hide();
+                    $('#sonata-ba-field-container-{{ admin.uniqId }}_year').show();
                 } else {
-                    $('#sonata-ba-field-container-{{ admin.uniqId }}_date').show();
                     $('#sonata-ba-field-container-{{ admin.uniqId }}_minAvailability').show();
-                    $('#sonata-ba-field-container-{{ admin.uniqId }}_custom_date').hide();
-                    $('#sonata-ba-field-container-{{ admin.uniqId }}_custom_availability').hide();
+                    $('#sonata-ba-field-container-{{ admin.uniqId }}_year').hide();
                 }
             });
         });

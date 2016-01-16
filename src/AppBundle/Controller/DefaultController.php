@@ -21,68 +21,76 @@ class DefaultController extends Controller
         $cats = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
         return $this->render('default/index.html.twig', array(
             'cats'=>$cats,
-        ));
+            ));
     }
 
     /**
-     * @Route("/category/{catId}", name="category")
+     * @Route("/category/{id}", name="category")
      */
-    public function categoryAction($catId)
+    public function categoryAction($id)
     {
-        $cat = $this->getDoctrine()->getRepository('AppBundle:Category')->find($catId);
+        $request   = $this->get('request');
+        $year      = $request->query->get('year', Date('Y'));
+        $month     = $request->query->get('month', Date('m'));
 
-        $minAv       = $cat->getMinAvailability();
-        $isCustom    = false;
-        $isAvailable = true;
-        $today       = new \DateTime();
-        $todayInt    = (int) $today->format('Ymd');
+        $today     = new \DateTime();
+        $iToday    = intval( $today->format('Ymd') );
+
+        $date    = Date('d') . '-' . $month . '-' . $year;
+        $date    = new \DateTime($date);
+
+        $prevCalendar = clone $date;
+        $prevCalendar = $prevCalendar->modify('-1 months');
+        $nextCalendar = clone $date;
+        $nextCalendar = $nextCalendar->modify('+1 months');
+
+        $cat = $this->getDoctrine()->getRepository('AppBundle:Category')->find($id);
 
         if ( $cat->getDestination()->getId() == 10 ) {
             // Custom Destination
-            $gav      = $cat->getCustomAvailability();
-            $av       = $cat->getCustomAvailability();
-            $d        = $cat->getCustomDate();
-            $isCustom = true;
-            $date     = $cat->getCustomDate();
-        } else {
-            $d    = $cat->getDate();
-            $date = $cat->getDate()->getDate();
-            $av   = floor($d->getAvailability()/2);
-            $gav  = $d->getAvailability();
-        }
 
-        $dateInt    = (int) $date->format('Ymd');
+            $template  = 'default/categoryCustom.html.twig';
+            $datesTour = $cat->getDates();
 
-        if ($todayInt > $dateInt) {
-            $isAvailable = false;
-        }
+            $arrDates  = array();
 
-        $rcnt = 0;
-        $unames = array();
-        foreach($cat->getReservations() as $r){
-            if($r->getStatus() == 'approved'){
-                $rcnt ++;
-                $unames[]= $r->getName();
+            foreach ($datesTour as $key => $value) {
+                if ( $value->getDate()->format('Y') == $year ) {
+                    if ( $value->getDate()->format('m') == $month ) {
+                        $reservations = $this->getCountReservationsApproved( $value->getReservations() );
+
+                        $arrDates[ intval($value->getDate()->format('d')) ] = array(
+                            'id'           => $value->getId(),
+                            'availability' => $value->getAvailability() - $reservations,
+                            'reservations' => $reservations,
+                            );
+                    }
+                }
+            }
+
+            if (empty($arrDates)) {
+                $date = Carbon::createFromDate($year, $month, 1);
+                $lastDayofMonth = $date->format('t') + 1;
+
+                for ($i=1; $i < $lastDayofMonth; $i++) { 
+                    $arrDates[$i] = array(
+                        'availability' => 0,
+                        'reservations' => 0,
+                        );
+                }
             }
         }
 
-        $av-=$rcnt;
-        $na = false;
-
-        if($av <= $minAv){
-            $na = true;
-        }
-
-        return $this->render('default/category.html.twig', array(
-            'gav'         => $gav,
-            'cat'         => $cat,
-            'td'          => $d,
-            'av'          => $av,
-            'rcnt'        => $rcnt,
-            'unames'      => $unames,
-            'isCustom'    => $isCustom,
-            'isAvailable' => $isAvailable
-        ));
+        return $this->render($template, array(
+            'id'           => $cat->getId(),
+            'date'         => $date,
+            'iToday'       => $iToday,
+            'arrDates'     => $arrDates,
+            'nameCategory' => $cat->getName(),
+            'prevCalendar' => $prevCalendar,
+            'nextCalendar' => $nextCalendar,
+            )
+        );
     }
 
     /**
@@ -96,7 +104,7 @@ class DefaultController extends Controller
             '_sonata_admin' => 'admin.reservation',
             '_sonata_name' => 'admin_app_reservation_edit',
             'id' => $reservationId,
-        ));
+            ));
     }
 
     /**
@@ -110,22 +118,21 @@ class DefaultController extends Controller
             '_sonata_admin' => 'admin.reservation',
             '_sonata_name' => 'admin_app_reservation_edit',
             'id' => $reservationId,
-        ));
+            ));
     }
 
-
     /**
-     * @Route("/reservation/{catId}", name="reservation")
+     * @Route("/reservation/{tourDateId}", name="reservation")
      */
-    public function reservationAction($catId, Request $request) {
+    public function reservationAction($tourDateId, Request $request) {
         $r = new Reservation();
-        $r->setCategory($this->getDoctrine()->getRepository('AppBundle:Category')->find($catId));
+        $r->setTourDate($this->getDoctrine()->getRepository('AppBundle:TourDate')->find($tourDateId));
         $form = $this->createFormBuilder($r)
-            ->add('name')
-            ->add('email', 'email')
-            ->add('country', 'country')
-            ->add('submit', 'submit')
-            ->getForm();
+        ->add('name')
+        ->add('email', 'email')
+        ->add('country', 'country')
+        ->add('submit', 'submit')
+        ->getForm();
 
         $form->handleRequest($request);
 
@@ -136,26 +143,18 @@ class DefaultController extends Controller
 
 
             $message = \Swift_Message::newInstance()
-                ->setSubject('New reservation')
-                ->setFrom('no-reply@southadventureperutours.com')
-                ->setTo('info@southadventureperutours.com')
-                ->setBody(
-                    $this->renderView(
-                        'email/notification.html.twig',
-                        array('r'=>$r)
+            ->setSubject('New reservation')
+            ->setFrom('no-reply@southadventureperutours.com')
+            // ->setTo('info@southadventureperutours.com')
+            // ->setTo('seba.thomson@gmail.com')
+            ->setTo('seba.thomson@gmail.com')
+            ->setBody(
+                $this->renderView(
+                    'email/notification.html.twig',
+                    array('r'=>$r)
                     ),
-                    'text/html'
+                'text/html'
                 )
-                /*
-                 * If you also want to include a plaintext version of the message
-                ->addPart(
-                    $this->renderView(
-                        'Emails/registration.txt.twig',
-                        array('name' => $name)
-                    ),
-                    'text/plain'
-                )
-                */
             ;
             $this->get('mailer')->send($message);
 
@@ -164,5 +163,17 @@ class DefaultController extends Controller
         return $this->render('default/reservation.html.twig', array('form'=>$form->createView()));
     }
 
+    public function getCountReservationsApproved($reservations)
+    {
+        $count = 0;
+
+        foreach ($reservations as $r) {
+            if($r->getStatus() == 'approved'){
+                $count ++;
+            }
+        }
+
+        return $count;
+    }
 
 }

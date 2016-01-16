@@ -33,12 +33,17 @@ class Category {
     /**
      * @ORM\Column(type="integer")
      */
-    protected $minAvailability = 50;
+    protected $baseAvailability = 200;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer", length=4, nullable=true)
      */
-    protected $customAvailability;
+    protected $year;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $minAvailability = 50;
 
     /**
      * @ORM\Column(type="date", nullable=true)
@@ -51,14 +56,9 @@ class Category {
     protected $destination;
 
     /**
-     * @ORM\ManyToOne(targetEntity="TourDate")
+     * @ORM\OneToMany(targetEntity="TourDate", mappedBy="category")
      */
-    protected $date;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Reservation", mappedBy="category", fetch="EAGER")
-     */
-    protected $reservations;
+    protected $dates;
 
     /**
      * Constructor
@@ -71,7 +71,6 @@ class Category {
     public function __toString(){
         return $this->getName();
     }
-
 
     /**
      * Get id
@@ -92,7 +91,7 @@ class Category {
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
@@ -107,82 +106,49 @@ class Category {
     }
 
     /**
-     * Set destination
+     * Set baseAvailability
      *
-     * @param \AppBundle\Entity\Destination $destination
+     * @param integer $baseAvailability
      * @return Category
      */
-    public function setDestination(\AppBundle\Entity\Destination $destination = null)
+    public function setBaseAvailability($baseAvailability)
     {
-        $this->destination = $destination;
-    
+        $this->baseAvailability = $baseAvailability;
+
         return $this;
     }
 
     /**
-     * Get destination
+     * Get baseAvailability
      *
-     * @return \AppBundle\Entity\Destination 
+     * @return integer 
      */
-    public function getDestination()
+    public function getBaseAvailability()
     {
-        return $this->destination;
+        return $this->baseAvailability;
     }
 
     /**
-     * Set date
+     * Set year
      *
-     * @param \AppBundle\Entity\TourDate $date
+     * @param integer $year
      * @return Category
      */
-    public function setDate(\AppBundle\Entity\TourDate $date = null)
+    public function setYear($year)
     {
-        $this->date = $date;
-    
+        $this->year = $year;
+
         return $this;
     }
 
     /**
-     * Get date
+     * Get year
      *
-     * @return \AppBundle\Entity\TourDate 
+     * @return integer 
      */
-    public function getDate()
+    public function getYear()
     {
-        return $this->date;
-    }
-
-    /**
-     * Add reservations
-     *
-     * @param \AppBundle\Entity\Reservation $reservations
-     * @return Category
-     */
-    public function addReservation(\AppBundle\Entity\Reservation $reservations)
-    {
-        $this->reservations[] = $reservations;
-    
-        return $this;
-    }
-
-    /**
-     * Remove reservations
-     *
-     * @param \AppBundle\Entity\Reservation $reservations
-     */
-    public function removeReservation(\AppBundle\Entity\Reservation $reservations)
-    {
-        $this->reservations->removeElement($reservations);
-    }
-
-    /**
-     * Get reservations
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getReservations()
-    {
-        return $this->reservations;
+        return $this->year;
     }
 
     /**
@@ -209,29 +175,6 @@ class Category {
     }
 
     /**
-     * Set customAvailability
-     *
-     * @param integer $customAvailability
-     * @return Category
-     */
-    public function setCustomAvailability($customAvailability)
-    {
-        $this->customAvailability = $customAvailability;
-
-        return $this;
-    }
-
-    /**
-     * Get customAvailability
-     *
-     * @return integer 
-     */
-    public function getCustomAvailability()
-    {
-        return $this->customAvailability;
-    }
-
-    /**
      * Set customDate
      *
      * @param \DateTime $customDate
@@ -252,5 +195,61 @@ class Category {
     public function getCustomDate()
     {
         return $this->customDate;
+    }
+
+    /**
+     * Set destination
+     *
+     * @param \AppBundle\Entity\Destination $destination
+     * @return Category
+     */
+    public function setDestination(\AppBundle\Entity\Destination $destination = null)
+    {
+        $this->destination = $destination;
+
+        return $this;
+    }
+
+    /**
+     * Get destination
+     *
+     * @return \AppBundle\Entity\Destination 
+     */
+    public function getDestination()
+    {
+        return $this->destination;
+    }
+
+    /**
+     * Add dates
+     *
+     * @param \AppBundle\Entity\TourDate $dates
+     * @return Category
+     */
+    public function addDate(\AppBundle\Entity\TourDate $dates)
+    {
+        $this->dates[] = $dates;
+
+        return $this;
+    }
+
+    /**
+     * Remove dates
+     *
+     * @param \AppBundle\Entity\TourDate $dates
+     */
+    public function removeDate(\AppBundle\Entity\TourDate $dates)
+    {
+        $this->dates->removeElement($dates);
+    }
+
+    /**
+     * Get dates
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getDates()
+    {
+        return $this->dates;
     }
 }

@@ -30,17 +30,22 @@ class TourDate {
     protected $date;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     protected $availability;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Destination", inversedBy="dates")
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="dates")
      */
-    protected $destination;
+    protected $category;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Reservation", mappedBy="tourDate", fetch="EAGER")
+     */
+    protected $reservations;
 
     public function __toString(){
-        return $this->getDate()->format('d.m.Y').' - '.$this->getAvailability();
+        return $this->getCategory()->getName() . ' (' . $this->getDate()->format('d.m.Y') . ')';
     }
 
     /**
@@ -62,7 +67,7 @@ class TourDate {
     public function setDate($date)
     {
         $this->date = $date;
-    
+
         return $this;
     }
 
@@ -85,7 +90,7 @@ class TourDate {
     public function setAvailability($availability)
     {
         $this->availability = $availability;
-    
+
         return $this;
     }
 
@@ -100,25 +105,65 @@ class TourDate {
     }
 
     /**
-     * Set destination
+     * Set category
      *
-     * @param \AppBundle\Entity\Destination $destination
+     * @param \AppBundle\Entity\Category $category
      * @return TourDate
      */
-    public function setDestination(\AppBundle\Entity\Destination $destination = null)
+    public function setCategory(\AppBundle\Entity\Category $category = null)
     {
-        $this->destination = $destination;
-    
+        $this->category = $category;
+
         return $this;
     }
 
     /**
-     * Get destination
+     * Get category
      *
-     * @return \AppBundle\Entity\Destination 
+     * @return \AppBundle\Entity\Category 
      */
-    public function getDestination()
+    public function getCategory()
     {
-        return $this->destination;
+        return $this->category;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->reservations = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add reservations
+     *
+     * @param \AppBundle\Entity\Reservation $reservations
+     * @return TourDate
+     */
+    public function addReservation(\AppBundle\Entity\Reservation $reservations)
+    {
+        $this->reservations[] = $reservations;
+
+        return $this;
+    }
+
+    /**
+     * Remove reservations
+     *
+     * @param \AppBundle\Entity\Reservation $reservations
+     */
+    public function removeReservation(\AppBundle\Entity\Reservation $reservations)
+    {
+        $this->reservations->removeElement($reservations);
+    }
+
+    /**
+     * Get reservations
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getReservations()
+    {
+        return $this->reservations;
     }
 }

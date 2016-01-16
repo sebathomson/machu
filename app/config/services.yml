@@ -24,3 +24,8 @@ services:
         arguments: [~, AppBundle\Entity\Destination, ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: Destination }
+    admin.tourDate:
+        class: AppBundle\Admin\TourDateAdmin
+        arguments: [~, AppBundle\Entity\TourDate, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: TourDate }

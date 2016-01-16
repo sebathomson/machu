@@ -1,26 +1,78 @@
 {% extends 'base.html.twig' %}
+
 {% block body %}
-<div class="base central {{ cat.destination.name }} number-{{ cat.id }}">
-    <div class="paragraph categorydestination">{{ cat.destination.name }} </div>
-    <div class="paragraph categoryname">{{ cat.name }} </div>
+	<table>
+		<thead>
+			<tr>
+				<th colspan="7" class="center">
+					{{ time|date('F') }}
+				</th>
+			</tr>
+			<tr>
+				<th width="12%">Sunday</th>
+				<th width="15%">Monday</th>
+				<th width="15%">Tuesday</th>
+				<th width="16%">Wednesday</th>
+				<th width="15%">Thursday</th>
+				<th width="15%">Friday</th>
+				<th width="12%">Saturday</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				{% set daysInMonth = time|date('t') %}
+					{% set startDow = time|date('F 1\\s\\t Y')|date('w') %}
+						{% set dow = startDow %}
+							{% for day in range(1,daysInMonth) %}
+								{% if loop.first and startDow != 0 %}
+									<td colspan="{{ startDow }}"></td>
+								{% endif %}
+								<td>
+									<div>
+										<div>{{ day }}</div>
+										<div>
+											{# day content here #}
+										</div>
+									</div>
+								</td>
+								{% if loop.last and dow != 6 %}
+									<td colspan="{{ 6 - dow }}">&nbsp;</td>
+								{% endif %}
+								{% if dow == 6 %}
+									{% set dow = 0 %}
+									</tr>
+									<tr>
+										{% else %}
+										{% set dow = dow + 1 %}
+										{% endif %}
+									{% endfor %}
+								</tr>
+							</tbody>
+						</table>
+					{% endblock %}
 
-    {% if isAvailable == true %}
-    <div class="paragraph categorysapce">{{ gav }} spaces available (global)</div>
-    {% if isCustom == false %}
-    {{ (av / 2)|round - rcnt }} spaces available for booking
-    {% endif %}
-    <div class="paragraph categorydate">for day {{ td.date|date("d.m.Y") }}
-    </div>
+					{#% block bkp %}
+						<div class="base central {{ cat.destination.name }} number-{{ cat.id }}">
+							<div class="paragraph categorydestination">{{ cat.destination.name }} </div>
+							<div class="paragraph categoryname">{{ cat.name }} </div>
 
-    <div class="paragraph categoryusers">Users who have joined =  {{ rcnt }} ({{ unames|join(',') }})
-    </div>
+							{% if isAvailable == true %}
+								<div class="paragraph categorysapce">{{ gav }} spaces available (global)</div>
+								{% if isCustom == false %}
+									{{ (av / 2)|round - rcnt }} spaces available for booking
+								{% endif %}
+								<div class="paragraph categorydate">for day {{ td.date|date("d.m.Y") }}
+								</div>
 
-    <div class="paragraph categorylink">Join this tour, <a href="{{ path('reservation', {'catId': cat.id}) }}">click here</a></div>
+								<div class="paragraph categoryusers">Users who have joined =  {{ rcnt }} ({{ unames|join(',') }})
+								</div>
 
-    {% else %}
+								<div class="paragraph categorylink">Join this tour, <a href="{{ path('reservation', {'catId': cat.id}) }}">click here</a></div>
 
-    No available.
+								{% else %}
 
-    {% endif %}
-</div>
-{% endblock %}
+								No available.
+
+							{% endif %}
+						</div>
+					{% endblock %#}

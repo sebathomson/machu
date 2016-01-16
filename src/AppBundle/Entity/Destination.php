@@ -29,12 +29,6 @@ class Destination {
     protected $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="TourDate", mappedBy="destination")
-     */
-    protected $dates;
-
-
-    /**
      * Constructor
      */
     public function __construct()
@@ -65,7 +59,7 @@ class Destination {
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
@@ -77,38 +71,5 @@ class Destination {
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Add dates
-     *
-     * @param \AppBundle\Entity\TourDate $dates
-     * @return Destination
-     */
-    public function addDate(\AppBundle\Entity\TourDate $dates)
-    {
-        $this->dates[] = $dates;
-    
-        return $this;
-    }
-
-    /**
-     * Remove dates
-     *
-     * @param \AppBundle\Entity\TourDate $dates
-     */
-    public function removeDate(\AppBundle\Entity\TourDate $dates)
-    {
-        $this->dates->removeElement($dates);
-    }
-
-    /**
-     * Get dates
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getDates()
-    {
-        return $this->dates;
     }
 }
