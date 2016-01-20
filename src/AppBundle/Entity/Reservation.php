@@ -51,6 +51,10 @@ class Reservation {
      */
     protected $tourDate;
 
+    public function __toString(){
+        return $this->getName();
+    }
+
     /**
      * Get id
      *

@@ -15,6 +15,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Validator\ErrorElement;
+use Sonata\AdminBundle\Route\RouteCollection;
 
 class CategoryAdmin extends Admin {
 
@@ -177,5 +178,19 @@ class CategoryAdmin extends Admin {
             ->assertNotBlank()
             ->end();
         }
+    }
+
+    public function getNewInstance()
+    {
+        $manager  = $this->getConfigurationPool()->getContainer()->get('doctrine')->getManager();
+        $instance = parent::getNewInstance();
+        $instance->setDestination($manager->getReference('AppBundle\Entity\Destination', 10));
+
+        return $instance;
+    }
+
+    protected function configureRoutes(RouteCollection $collection)
+    {
+        $collection->remove('delete');
     }
 }

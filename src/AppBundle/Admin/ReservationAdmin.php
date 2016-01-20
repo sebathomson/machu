@@ -34,7 +34,7 @@ class ReservationAdmin extends Admin {
             )));
 
         if( $this->getSubject()->getId() && $this->getSubject()->getTourDate()->getCategory()->getDestination()->getId() == 10 ){
-            $formMapper->add('tourDate.category.custom_date', 'date', array(
+            $formMapper->add('tourDate.date', 'date', array(
                 'read_only' => true,
                 'disabled'  => true,
                 ));

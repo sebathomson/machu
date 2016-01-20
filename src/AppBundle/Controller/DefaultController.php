@@ -63,6 +63,8 @@ class DefaultController extends Controller
                             'id'           => $value->getId(),
                             'availability' => $value->getAvailability() - $reservations,
                             'reservations' => $reservations,
+                            'users'        => $value->getReservationsApproved( $value->getReservations() ),
+                            'isFullReserved' => ( (($value->getAvailability() - $reservations) == 0) AND ($value->getAvailability() != 0) )? true: false
                             );
                     }
                 }
@@ -76,6 +78,7 @@ class DefaultController extends Controller
                     $arrDates[$i] = array(
                         'availability' => 0,
                         'reservations' => 0,
+                        'users'        => array(),
                         );
                 }
             }
@@ -147,7 +150,7 @@ class DefaultController extends Controller
             ->setFrom('no-reply@southadventureperutours.com')
             // ->setTo('info@southadventureperutours.com')
             // ->setTo('seba.thomson@gmail.com')
-            ->setTo('seba.thomson@gmail.com')
+            ->setTo('nestormq@gmail.com')
             ->setBody(
                 $this->renderView(
                     'email/notification.html.twig',
@@ -174,6 +177,19 @@ class DefaultController extends Controller
         }
 
         return $count;
+    }
+
+    public function getReservationsApproved($reservations)
+    {
+        $return = array();
+
+        foreach ($reservations as $r) {
+            if($r->getStatus() == 'approved'){
+                $return[] = $r;
+            }
+        }
+
+        return $return;
     }
 
 }

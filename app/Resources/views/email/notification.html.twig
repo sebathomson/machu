@@ -1,7 +1,7 @@
 Destination: {{ r.tourDate.category.destination.name }} <br>
 Tour: {{ r.tourDate.category.name }} <br>
 {% if r.tourDate.category.destination.id == 10 %}
-Date: {{ r.tourDate.category.customDate|date("d.m.Y") }} <br>
+Date: {{ r.tourDate.date|date("d.m.Y") }} <br>
 {% else %}
 Date: {{ r.tourDate.category.date.date|date("d.m.Y") }} <br>
 {% endif %}

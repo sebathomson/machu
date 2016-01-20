@@ -53,7 +53,7 @@ class Category {
     /**
      * @ORM\ManyToOne(targetEntity="Destination")
      */
-    protected $destination;
+    protected $destination = 10;
 
     /**
      * @ORM\OneToMany(targetEntity="TourDate", mappedBy="category")

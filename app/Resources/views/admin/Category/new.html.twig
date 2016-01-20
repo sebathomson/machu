@@ -38,8 +38,23 @@ file that was distributed with this source code.
 
 {% block form %}
     {{ block('parentForm') }}
+    <style>
+        .firstDay {
+            background-color: yellow;
+        }
+    </style>
     <script>
         $(document).on('ready', function() {
+
+            $('.sonata-ba-td-{{ admin.uniqId }}_dates-date_read').each(function(index, element) {
+                splites = $(this).find('input').val().split('-');
+
+                if (splites[0] == 01) {
+                    $(this).closest('tr').addClass('firstDay');
+                };
+            });
+
+
             $('#sonata-ba-field-container-{{ admin.uniqId }}_baseAvailability').hide();
             $('[name=btn_create_and_create]').remove();
             $('[name=btn_create_and_list]').remove();

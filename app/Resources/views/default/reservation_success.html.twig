@@ -2,7 +2,7 @@
 {% block body %}
 Success 
 {% if r.tourDate.category.destination.id == 10 %}
-{{ r.tourDate.category.customDate|date("d.m.Y") }}
+{{ r.tourDate.date|date("d.m.Y") }}
 {% else %}
 {{ r.tourDate.category.date.date|date("d.m.Y") }}
 {% endif %}{{ r.tourDate.category.name }} {{ r.email }}

@@ -72,7 +72,10 @@
 		.available-day {
 			background-color: green;
 		}
-		.not-scheduled-msg, .no-available-msg {
+		.filled-spaces-day {
+			background-color: blue;
+		}
+		.not-scheduled-msg, .no-available-msg, .filled-spaces-msg {
 			border: 1px solid #333;
 			margin-top: 2px;
 			padding: 2px;
@@ -85,7 +88,7 @@
 					<a href="{{ path('category', {'id': id}) }}?month={{ prevCalendar | date('m') }}&year={{ prevCalendar | date('Y') }}">< Prev</a>
 				</th>
 				<th colspan="5" class="center month-name">
-					{{ nameCategory }} - {{ time | date('F') }}
+					{{ nameCategory }}<br />{{ time | date('F') }} - {{ time | date('Y') }}
 				</th>
 				<th>
 					<a href="{{ path('category', {'id': id}) }}?month={{ nextCalendar | date('m') }}&year={{ nextCalendar | date('Y') }}">Next ></a></th>
@@ -123,32 +126,28 @@
 							{% else %}
 
 								{% if arrDates[day] is defined %}
-									{% if arrDates[day].availability is null %}
-										{# Not Scheduled #}
-										<div class="date-number not-scheduled-day">{{ day }}</div>
-										<div class="not-scheduled-msg">Not Scheduled</div>
+									{% if arrDates[day].availability == 0 %}
+										{% if arrDates[day].isFullReserved == true %}
+											{# Filled Spaces #}
+											<div class="date-number filled-spaces-day">{{ day }}</div>
+											<div class="filled-spaces-msg">Filled Spaces</div>
+											<div class="users-joined">{{ arrDates[day].reservations }} users ({{ arrDates[day].users|join(', ') }})</div>
+										{% else %}
+											{# Not Scheduled #}
+											<div class="date-number not-scheduled-day">{{ day }}</div>
+											<div class="not-scheduled-msg">Not Scheduled</div>
+											<div class="join"><a href="{{ path('reservation', {'tourDateId': arrDates[day].id}) }}">Reservation</a></div>
+										{% endif %}
 									{% else %}
 										<div class="date-number available-day">{{ day }}</div>
 										<div class="spaces-available">{{ arrDates[day].availability }} spaces</div>
-										<div class="users-joined">{{ arrDates[day].reservations }} users</div>
+										<div class="users-joined">{{ arrDates[day].reservations }} users ({{ arrDates[day].users|join(', ') }})</div>
 										{% if arrDates[day].availability != 0 %}
 										<div class="join"><a href="{{ path('reservation', {'tourDateId': arrDates[day].id}) }}">Join this tour</a></div>
 										{% endif %}
 									{% endif %}
 								{% endif %}
 							{% endif %}
-
-
-
-
-
-{# 							<div class="date-number {% if iToday > iDate  %}expired-day{% endif %}">{{ day }}</div>
-							{% if iToday <= iDate %}
-
-							{% else %}
-								<div class="spaces-available">expired</div>
-							{% endif %}
-						</div>#}
 					</td>
 					{% if loop.last and dow != 6 %}
 						<td colspan="{{ 6 - dow }}">&nbsp;</td>
