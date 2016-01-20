@@ -63,7 +63,7 @@ class DefaultController extends Controller
                             'id'           => $value->getId(),
                             'availability' => $value->getAvailability() - $reservations,
                             'reservations' => $reservations,
-                            'users'        => $value->getReservationsApproved( $value->getReservations() ),
+                            'users'        => $this->getReservationsApproved( $value->getReservations() ),
                             'isFullReserved' => ( (($value->getAvailability() - $reservations) == 0) AND ($value->getAvailability() != 0) )? true: false
                             );
                     }
